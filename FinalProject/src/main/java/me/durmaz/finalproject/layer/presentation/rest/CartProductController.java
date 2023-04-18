@@ -38,32 +38,27 @@ public class CartProductController {
         User user;
 
 
-
-            cartDto = cartProductService.findCart(userId);
-            user=externalUserService.getUserById(userId);
-            List<CartProductDto> cartProductDtoList;
-            if(user==null) {
-                return ResponseEntity.notFound().build();
-            }
-
+        cartDto = cartProductService.findCart(userId);
+        user = externalUserService.getUserById(userId);
+        List<CartProductDto> cartProductDtoList;
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
 
 
-            if (cartDto == null) {
+        if (cartDto == null) {
 
 
+            cartDto = new CartDto(
+                    0,
+                    user,
+                    String.format("cardnum"),
+                    CartStatus.NEW
+            );
+            cartProductService.addCart(cartDto);
 
-
-
-                cartDto=  new CartDto(
-                        0,
-                        user,
-                        String.format("cardnum"),
-                        CartStatus.NEW
-                );
-                cartProductService.addCart(cartDto);
-
-            }
-             cartProductDtoList = cartProductService.list(userId);
+        }
+        cartProductDtoList = cartProductService.list(userId);
 
         return ResponseEntity.ok(cartProductDtoList);
 
@@ -74,9 +69,8 @@ public class CartProductController {
     public ResponseEntity<?> add(@PathVariable("userId") long userId, @PathVariable("productId") long productId) {
         CartDto cartDto = cartProductService.findCart(userId);
         ProductDto productDto = cartProductService.findProduct(productId);
-        if(cartDto == null )
-        {
-           cartDto=  new CartDto(
+        if (cartDto == null) {
+            cartDto = new CartDto(
                     0,
                     externalUserService.getUserById(userId),
                     String.format("cardnum"),
@@ -128,24 +122,32 @@ public class CartProductController {
 
     public ResponseEntity<String> checkoutCart(@PathVariable("userId") long userId, @RequestBody String cardNumber) {
 
-           CartDto cartDto = cartProductService.findCart(userId);
-            if (cartDto == null) {
-                return ResponseEntity.badRequest().build();
-            }
-            try {
-                cartDto.setCartStatus(CartStatus.COMPLETED);
-                cartDto.setCardNumber(cardNumber);
+        CartDto cartDto = cartProductService.findCart(userId);
+        if (cartDto == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            cartDto.setCartStatus(CartStatus.COMPLETED);
+            cartDto.setCardNumber(cardNumber);
 
-                cartProductService.changeCart(cartDto);
-                    return ResponseEntity.ok().build();
+            cartProductService.changeCart(cartDto);
+            return ResponseEntity.ok().build();
 
-            }
-            catch (NullPointerException e) {
-                return ResponseEntity.notFound().build();
-            }
-
-
+        } catch (NullPointerException e) {
+            return ResponseEntity.notFound().build();
+        }
 
 
     }
+
+    // write me a method to get cart by user id that purchases are completed
+    @GetMapping("/purchased/{userId}")
+    public ResponseEntity<List<CartProductDto>> getPurchasedCart(@PathVariable("userId") long userId) {
+        List<CartProductDto> cartProductDtoList = cartProductService.list(userId);
+        if (cartProductDtoList == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(cartProductDtoList);
     }
+}

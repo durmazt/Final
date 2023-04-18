@@ -85,10 +85,10 @@ const CartDetail = () => {
    
   };
 
-  const checkoutNavigate=(cartId)=>
+  const checkoutNavigate=()=>
   {
     if(cart.length != 0)
-    navigate(`/cart/checkout/${cartId}}`)
+    navigate(`/cart/checkout`)
     else
     alert("no more products, prechious")
   } 

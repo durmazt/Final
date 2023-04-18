@@ -28,6 +28,9 @@ import Login from './authantication/Login';
 import Signup from './authantication/Signup';
 import { useAuth } from './context/AuthContext';
 import CartCheckout from './shopping/CartCheckout';
+import PurchasedCart from './shopping/PurchasedCarts';
+import CartCatalogs from './shopping/CartCatalogs';
+import Account from './shopping/Account';
 
 
 function ResponsiveDrawer(props) {
@@ -60,7 +63,7 @@ function ResponsiveDrawer(props) {
  function handleOpen(){
    setMobileOpen(!mobileOpen);
   }
-  const cartAccouunt=["Hesap","Sepet","Siparişler"]
+ 
   const container = window !== undefined ? () => window().document.body : undefined;
   const navigate=useNavigate();
   const [isInCart,setIsInCart]=useState(false);
@@ -78,6 +81,23 @@ function ResponsiveDrawer(props) {
   {
     navigate('/');
     setIsInCart(false);
+  }
+  const navigateToOthers= (choosed) => {
+
+    console.log("that one choosed: "+choosed);
+   if(choosed=="Hesap")
+    {
+      navigate('/account');
+
+    }
+    else if(choosed=="Sepet")
+    {
+      navigate('/cart/get');
+    }
+    else if(choosed=="Siparişler")
+    {
+      navigate('/cart/purchased');
+    } 
   }
 
   return (
@@ -166,15 +186,7 @@ function ResponsiveDrawer(props) {
       <Toolbar />
       <Divider />
       {
-      isInCart ? <List>
-    {cartAccouunt.map((data) => (
-      <ListItem key={data} disablePadding>
-        <ListItemButton  >
-          <ListItemText primary={data} />
-        </ListItemButton>
-      </ListItem>
-    ))}
-  </List> :<CategoriesComponent />
+      isInCart ?<CartCatalogs/>:<CategoriesComponent />
 }
     </div>
         </Drawer>
@@ -190,15 +202,7 @@ function ResponsiveDrawer(props) {
       <Toolbar />
       <Divider />
     {
-      isInCart ? <List>
-    {cartAccouunt.map((data) => (
-      <ListItem key={data} disablePadding>
-        <ListItemButton  >
-          <ListItemText primary={data} />
-        </ListItemButton>
-      </ListItem>
-    ))}
-  </List> :<CategoriesComponent />
+      isInCart ?<CartCatalogs/>:<CategoriesComponent />
 }
     </div>
         </Drawer>
@@ -210,9 +214,11 @@ function ResponsiveDrawer(props) {
           <Route path={`/products/:categoryId`} element={<ProductsComponent/>} />
           <Route path='/product/:productId' element={<ProductsComponent/>}/>
           <Route path='/cart/get' element={<CartDetail/>}/>
-          <Route path='/cart/checkout/:cartId' element={<CartCheckout/>}/>
+          <Route path='/cart/checkout' element={<CartCheckout/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/signup' element={<Signup/>}/>
+          <Route path='/cart/purchased' element={<PurchasedCart/>}/>
+          <Route path='/account' element={<Account/>}/>
         </Routes>
       </Box>
        

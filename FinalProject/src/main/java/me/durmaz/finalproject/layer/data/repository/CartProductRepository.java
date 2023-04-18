@@ -18,7 +18,7 @@ public interface CartProductRepository extends CrudRepository<CartProduct, Long>
 
     @Query("select c from CartProduct c where c.cartId.cartId = :cartId")
     List<CartProduct> findAllByCartId(@Param("cartId")long cartId);
-    @Query("select c from CartProduct c where c.cartId.userId.id = :userId and c.cartId.cartStatus = 0")
+    @Query("select c from CartProduct c where c.cartId.userId.id = :userId and c.cartId.cartStatus = 1")
     List<CartProduct> findAllByUserId(@Param("userId") long userId);
     @Query("select c from CartProduct c where c.cartId.cartId = :cartId")
     CartProduct findByCartId(@Param("cartId")long cartId);
